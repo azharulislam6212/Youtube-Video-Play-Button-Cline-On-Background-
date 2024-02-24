@@ -1,0 +1,161 @@
+{% liquid
+  assign s = section.settings
+  assign video_url = s.video_url
+  assign video_url_final = ''
+  if video_url contains 'youtu.be'
+    assign video_url_final = video_url | remove: 'https://youtu.be/'
+  elsif video_url contains 'embed'
+    assign video_url_final = video_url | remove: 'https://www.youtube.com/embed/'
+  elsif video_url contains 'watch'
+    assign video_url_final = video_url | remove: 'https://www.youtube.com/watch?v='
+  endif
+%}
+<section class="hero-wrap  color-{{ s.color_scheme }} gradient">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <div class="video-container">
+          <div class="video-container__video">
+            <iframe
+              class="videoIframe js-videoIframe"
+              src=""
+              frameborder="0"
+              allowTransparency="true"
+              allowfullscreen
+              data-src="https://www.youtube.com/embed/{{video_url_final}}?autoplay=1&modestbranding=1&rel=0&hl=ru&showinfo=0&color=white"
+            >
+            </iframe>
+            {% if s.image != blank %}
+              <div class="video-container__poster">
+                {% render 'responsive-image' with image: s.image %}
+              </div>
+            {% endif %}
+          </div>
+
+          <a href="javascript:void(0)" class="video-container__play" aria-label="Video abspielen">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="feather feather-play-circle"
+            >
+              <title>Video abspielen</title><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="feature-text-paired">
+          {% if s.heading != blank %}
+            <h2 class="heading">{{ s.heading }}</h2>
+          {% endif %}
+
+          {% if s.text != blank %}
+            <div class="rte">
+              {{ s.text }}
+            </div>
+          {% endif %}
+
+          {% if s.button_label != blank %}
+            <div class="btn-wrap">
+              <a
+                href="{{ s.button_link }}"
+                class="button{% if s.button_style_secondary_1 %} button--secondary{% else %} button--primary{% endif %}"
+              >
+                {{- s.button_label -}}
+              </a>
+            </div>
+          {% endif %}
+
+          {% if s.badge_image != blank %}
+            <div class="rating-badge">
+              <img src="{{ s.badge_image | img_url: "master"}}" width="150" height="33">
+              <span>{{ s.rating_text }}</span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Hero Video",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Poster Image"
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "label": "Video Url",
+      "accept": ["youtube"],
+      "default": "https://youtu.be/VxaKaF92gLI",
+      "info": "video url should be like this: https://www.youtube.com/embed/VxaKaF92gLI"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Von 0 auf 7-stellig auch ohne Agentur und Coaching!"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Shop Optimierung, Paid Ads und Email Marketing - das sind die wichtigsten Hebel. Hol dir jetzt das geballte Wissen mit dem Ecommerce Playbook™.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "MEHR ERFAHREN"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_style_secondary_1",
+      "default": false,
+      "label": "t:sections.image-banner.blocks.buttons.settings.button_style_secondary_1.label"
+    },
+    {
+      "type": "header",
+      "content": "Rating Badge"
+    },
+    {
+      "type": "image_picker",
+      "id": "badge_image",
+      "label": "Badge Image"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "rating_text",
+      "label": "Rating Text",
+      "default": "323+ Shop Betreiber sind schon dabei!"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Video"
+    }
+  ]
+}
+{% endschema %}
